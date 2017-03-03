@@ -430,9 +430,9 @@ int main(int argc, char **argv)
 
 	/* check command line options */
 	if (argc != 3) {
-		fprintf(stderr, "\n");
 		fprintf(stderr, "%s creates a pty for applications using"
 			" the slcan ASCII protocol and\n", argv[0]);
+        	fprintf(stderr, "  (use CTRL-C to terminate %s)\n\n", argv[0]);	
 		fprintf(stderr, "converts the ASCII data to a CAN network"
 			" interface (and vice versa)\n\n");
 		fprintf(stderr, "Usage: %s <pty> <can interface>\n", argv[0]);

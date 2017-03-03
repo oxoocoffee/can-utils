@@ -253,12 +253,18 @@ int main(int argc, char **argv)
 			filter_id_only = 1;
 			break;
 
-		case '?':
-			break;
+                case '?':
+                default:
+                        print_usage(basename(argv[0]));
 
-		default:
-			fprintf(stderr, "Unknown option %c\n", opt);
-			break;
+                        if( opt != '?') {
+                                fprintf(stderr, "\nUnknown option %c\n", opt);
+                                exit(EXIT_FAILURE);
+			}
+                        else
+                                exit(EXIT_SUCCESS);
+
+                        break;
 		}
 	}
 
@@ -752,4 +758,4 @@ void readsettings(char* name, int sockfd){
 	}
 	else
 		printf("unable to read setting file '%s'!\n", fname);
-};
+}

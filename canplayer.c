@@ -295,11 +295,18 @@ int main(int argc, char **argv)
 			verbose++;
 			break;
 
-		case '?':
-		default:
-			print_usage(basename(argv[0]));
-			return 1;
-			break;
+                case '?':
+                default:
+                        print_usage(basename(argv[0]));
+
+                        if( opt != '?') {
+                                fprintf(stderr, "\nUnknown option %c\n", opt);
+                                exit(EXIT_FAILURE);
+                        }
+                        else
+                                exit(EXIT_SUCCESS);
+
+                        break;
 		}
 	}
 

@@ -40,6 +40,7 @@
 #include <linux/tty.h>
 #include <linux/sockios.h>
 #include <stdarg.h>
+#include <libgen.h>
 
 /* Change this to whatever your daemon is called */
 #define DAEMON_NAME "slcand"
@@ -218,14 +219,14 @@ int main(int argc, char *argv[])
 		case 's':
 			speed = optarg;
 			if (strlen(speed) > 1)
-				print_usage(argv[0]);
+				print_usage(basename(argv[0]));
 			break;
 		case 'S':
 			uart_speed_str = optarg;
 			errno = 0;
 			uart_speed = strtol(uart_speed_str, NULL, 10);
 			if (errno)
-				print_usage(argv[0]);
+				print_usage(basename(argv[0]));
 			if (look_up_uart_speed(uart_speed) == -1) {
 				fprintf(stderr, "Unsupported UART speed (%lu)\n", uart_speed);
 				exit(EXIT_FAILURE);
@@ -244,16 +245,24 @@ int main(int argc, char *argv[])
 		case 'b':
 			btr = optarg;
 			if (strlen(btr) > 6)
-				print_usage(argv[0]);
+				print_usage(basename(argv[0]));
 			break;
 		case 'F':
 			run_as_daemon = 0;
 			break;
-		case 'h':
-		case '?':
-		default:
-			print_usage(argv[0]);
-			break;
+
+                case '?':
+                default:
+                        print_usage(basename(argv[0]));
+
+                        if( opt != '?') {
+                                fprintf(stderr, "\nUnknown option %c\n", opt);
+                                exit(EXIT_FAILURE);
+			}
+                        else
+                                exit(EXIT_SUCCESS);
+
+                        break;
 		}
 	}
 
@@ -266,7 +275,7 @@ int main(int argc, char *argv[])
 	/* Parse serial device name and optional can interface name */
 	tty = argv[optind];
 	if (NULL == tty)
-		print_usage(argv[0]);
+		print_usage(basename(argv[0]));
 
 	name = argv[optind + 1];
 

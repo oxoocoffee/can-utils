@@ -273,10 +273,18 @@ int main(int argc, char **argv)
 			mode = CFL_EXACT;
 			break;
 
-		default:
-			print_usage(prg);
-			exit(1);
-			break;
+                case '?':
+                default:
+                        print_usage(basename(argv[0]));
+
+                        if( opt != '?') {
+                                fprintf(stderr, "\nUnknown option %c\n", opt);
+                                exit(EXIT_FAILURE);
+			}
+                        else
+                                exit(EXIT_SUCCESS);
+
+                        break;
 		}
 	}
 

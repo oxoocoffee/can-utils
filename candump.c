@@ -374,10 +374,19 @@ int main(int argc, char **argv)
 			timeout_config.tv_usec = (timeout_config.tv_usec % 1000) * 1000;
 			timeout_current = &timeout;
 			break;
-		default:
-			print_usage(basename(argv[0]));
-			exit(1);
-			break;
+
+                case '?':
+                default:
+                        print_usage(basename(argv[0]));
+
+                        if( opt != '?') {
+                                fprintf(stderr, "\nUnknown option %c\n", opt);
+                                exit(EXIT_FAILURE);
+			}
+                        else
+                                exit(EXIT_SUCCESS);
+
+                        break;
 		}
 	}
 

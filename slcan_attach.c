@@ -47,6 +47,7 @@
 #include <fcntl.h>
 #include <unistd.h>
 #include <getopt.h>
+#include <libgen.h>
 #include <sys/socket.h>
 #include <sys/ioctl.h>
 #include <net/if.h>
@@ -121,30 +122,38 @@ int main(int argc, char **argv)
 		case 's':
 			speed = optarg;
 			if (strlen(speed) > 1)
-				print_usage(argv[0]);
+				print_usage(basename(argv[0]));
 			break;
 
 		case 'b':
 			btr = optarg;
 			if (strlen(btr) > 6)
-				print_usage(argv[0]);
+				print_usage(basename(argv[0]));
 			break;
 
 		case 'n':
 			name = optarg;
 			if (strlen(name) > IFNAMSIZ-1)
-				print_usage(argv[0]);
+				print_usage(basename(argv[0]));
 			break;
 
-		case '?':
-		default:
-			print_usage(argv[0]);
-			break;
+                case '?':
+                default:
+                        print_usage(basename(argv[0]));
+
+                        if( opt != '?') {
+                                fprintf(stderr, "\nUnknown option %c\n", opt);
+                                exit(EXIT_FAILURE);
+                        }
+                        else
+                                exit(EXIT_SUCCESS);
+
+                        break;
 		}
 	}
 
 	if (argc - optind != 1)
-		print_usage(argv[0]);
+		print_usage(basename(argv[0]));
 
 	tty = argv[optind];
 

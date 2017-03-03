@@ -236,16 +236,18 @@ int main(int argc, char **argv)
 			}
 			break;
 
-		case '?':
-			print_usage(basename(argv[0]));
-			exit(0);
-			break;
+                case '?':
+                default:
+                        print_usage(basename(argv[0]));
 
-		default:
-			fprintf(stderr, "Unknown option %c\n", opt);
-			print_usage(basename(argv[0]));
-			exit(1);
-			break;
+                        if( opt != '?') {
+                                fprintf(stderr, "\nUnknown option %c\n", opt);
+                                exit(EXIT_FAILURE);
+			}
+                        else
+                                exit(EXIT_SUCCESS);
+
+                        break;
 		}
 	}
 

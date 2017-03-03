@@ -77,8 +77,8 @@ static unsigned long long enobufs_count;
 
 void print_usage(char *prg)
 {
-	fprintf(stderr, "\n%s: generate CAN frames\n\n", prg);
 	fprintf(stderr, "Usage: %s [options] <CAN interface>\n", prg);
+	fprintf(stderr, "  (use CTRL-C to terminate %s)\n\n", prg);
 	fprintf(stderr, "Options: -g <ms>       (gap in milli seconds "
 		"- default: %d ms)\n", DEFAULT_GAP);
 	fprintf(stderr, "         -e            (generate extended frame mode "
@@ -262,12 +262,18 @@ int main(int argc, char **argv)
 			}
 			break;
 
-		case '?':
-		case 'h':
-		default:
-			print_usage(basename(argv[0]));
-			return 1;
-			break;
+                case '?':
+                default:
+                        print_usage(basename(argv[0]));
+
+                        if( opt != '?') {
+                                fprintf(stderr, "\nUnknown option %c\n", opt);
+                                exit(EXIT_FAILURE);
+			}
+                        else
+                                exit(EXIT_SUCCESS);
+
+                        break;
 		}
 	}
 
