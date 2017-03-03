@@ -45,6 +45,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#include <libgen.h>
 
 #include <net/if.h>
 #include <sys/ioctl.h>
@@ -54,6 +55,21 @@
 #include <linux/can/raw.h>
 
 #include "lib.h"
+
+void print_usage(char *prg)
+{
+	fprintf(stderr, "Usage: %s <device> <can_frame>.\n", prg);
+	fprintf(stderr, "    <can_id>#{R|data}          for CAN 2.0 frames\n");
+	fprintf(stderr, "    <can_id>##<flags>{data}    for CAN FD frames\n\n");
+	fprintf(stderr, "<can_id> can have 3 (SFF) or 8 (EFF) hex chars\n");
+	fprintf(stderr, "{data} has 0..8 (0..64 CAN FD) ASCII hex-values (optionally");
+	fprintf(stderr, " separated by '.')\n");
+	fprintf(stderr, "<flags> a single ASCII Hex value (0 .. F) which defines");
+	fprintf(stderr, " canfd_frame.flags\n\n");
+	fprintf(stderr, "e.g. 5A1#11.2233.44556677.88 / 123#DEADBEEF / 5AA# / ");
+	fprintf(stderr, "123##1 / 213##311\n     1F334455#1122334455667788 / 123#R ");
+	fprintf(stderr, "for remote transmission request.\n\n");
+}
 
 int main(int argc, char **argv)
 {
@@ -67,7 +83,7 @@ int main(int argc, char **argv)
 
 	/* check command line options */
 	if (argc != 3) {
-		fprintf(stderr, "Usage: %s <device> <can_frame>.\n", argv[0]);
+		print_usage(basename(argv[0]));
 		return 1;
 	}
 
@@ -75,16 +91,7 @@ int main(int argc, char **argv)
 	required_mtu = parse_canframe(argv[2], &frame);
 	if (!required_mtu){
 		fprintf(stderr, "\nWrong CAN-frame format! Try:\n\n");
-		fprintf(stderr, "    <can_id>#{R|data}          for CAN 2.0 frames\n");
-		fprintf(stderr, "    <can_id>##<flags>{data}    for CAN FD frames\n\n");
-		fprintf(stderr, "<can_id> can have 3 (SFF) or 8 (EFF) hex chars\n");
-		fprintf(stderr, "{data} has 0..8 (0..64 CAN FD) ASCII hex-values (optionally");
-		fprintf(stderr, " separated by '.')\n");
-		fprintf(stderr, "<flags> a single ASCII Hex value (0 .. F) which defines");
-		fprintf(stderr, " canfd_frame.flags\n\n");
-		fprintf(stderr, "e.g. 5A1#11.2233.44556677.88 / 123#DEADBEEF / 5AA# / ");
-		fprintf(stderr, "123##1 / 213##311\n     1F334455#1122334455667788 / 123#R ");
-		fprintf(stderr, "for remote transmission request.\n\n");
+		print_usage(basename(argv[0]));
 		return 1;
 	}
 

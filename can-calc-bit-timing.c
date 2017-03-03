@@ -24,6 +24,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <libgen.h>
 
 #include <linux/types.h>
 #include <linux/can/netlink.h>
@@ -660,14 +661,24 @@ int main(int argc, char *argv[])
 			spt_nominal = strtoul(optarg, NULL, 10);
 			break;
 
-		default:
-			print_usage(argv[0]);
-			break;
-		}
+                case '?':
+                default:
+                        print_usage(basename(argv[0]));
+
+                        if( opt != '?') {
+                                fprintf(stderr, "\nUnknown option %c\n", opt);
+                                exit(EXIT_FAILURE);
+                        }
+                        else
+                                exit(EXIT_SUCCESS);
+
+                        break;
+                }
+
 	}
 
 	if (argc > optind + 1)
-		print_usage(argv[0]);
+		print_usage(basename(argv[0]));
 
 	if (argc == optind + 1)
 		name = argv[optind];
@@ -678,7 +689,7 @@ int main(int argc, char *argv[])
 	}
 
 	if (spt_nominal && (spt_nominal >= 1000 || spt_nominal < 100))
-		print_usage(argv[0]);
+		print_usage(basename(argv[0]));
 
 	for (i = 0; i < ARRAY_SIZE(can_calc_consts); i++) {
 		if (name && strcmp(can_calc_consts[i].bittiming_const.name, name))

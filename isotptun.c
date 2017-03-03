@@ -102,6 +102,7 @@ void perror_syslog(const char *s)
 void print_usage(char *prg)
 {
 	fprintf(stderr, "\nUsage: %s [options] <CAN interface>\n\n", prg);
+	fprintf(stderr, "  (use CTRL-C to terminate %s)\n\n", prg);
 	fprintf(stderr, "This program creates a Linux tunnel netdevice 'ctunX' and transfers the\n");
 	fprintf(stderr, "ethernet frames inside ISO15765-2 (unreliable) datagrams on CAN.\n\n");
 	fprintf(stderr, "Options: -s <can_id>  (source can_id. Use 8 digits for extended IDs)\n");
@@ -257,16 +258,18 @@ int main(int argc, char **argv)
 			run_as_daemon = 1;
 			break;
 
-		case '?':
-			print_usage(basename(argv[0]));
-			exit(EXIT_SUCCESS);
-			break;
+                case '?':
+                default:
+                        print_usage(basename(argv[0]));
 
-		default:
-			fprintf(stderr, "Unknown option %c\n", opt);
-			print_usage(basename(argv[0]));
-			exit(EXIT_FAILURE);
-			break;
+                        if( opt != '?') {
+                                fprintf(stderr, "\nUnknown option %c\n", opt);
+                                exit(EXIT_FAILURE);
+			}
+                        else
+                                exit(EXIT_SUCCESS);
+
+                        break;
 		}
 	}
 
